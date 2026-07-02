@@ -116,3 +116,68 @@
 
 --- NEW SESSION: 23/06/2026 15:07:17 ---
 /finger/box/MechanicalObject.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 10:36:42 ---
+/finger/Plastic/Stress.showObject = 1
+/finger/Plastic/Stress.showObjectScale = 7.3
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/tetras.showColor = 1 1 1 1
+/finger/tetras.showIndices = 1
+/finger/tetras.showIndicesScale = -9.79996
+/finger/tetras.showColor = 1 1 1 1
+/finger/tetras.showIndicesScale = 0.01
+/finger/Plastic/boxConstraint.min = -49.73
+
+--- NEW SESSION: 30/06/2026 11:15:44 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:15:44 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:36:47 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:38:22 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:38:22 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.constraint = 1 0 1 0 100 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:46:31 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:47:27 ---
+/finger/Plastic/Stress.constraint = 4 0 1 0 1000 0 0 0 0 0 1 1 1 1000 0 0 0 0 0 2 1 2 1000 0 0 0 0 0 3 1 3 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 11:48:51 ---
+/finger/Plastic/Stress.constraint = 1 0 1 2 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 30/06/2026 17:02:03 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 01/07/2026 15:13:46 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 01/07/2026 15:13:46 ---
+/finger/Plastic/Stress.constraint = 1 0 1 0 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/Stress.constraint = 1 0 1 0 1000 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1

@@ -39,7 +39,7 @@ def createScene(rootNode):
     rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     rootNode.gravity = [0, -9810, 0]
-    rootNode.dt = 0.01
+    rootNode.dt = 0.001
 
     ##########################################
     # FEM Model                              #
@@ -60,7 +60,7 @@ def createScene(rootNode):
 
     # Add a TetrahedronFEMForceField component which implement an elastic material model solved using the Finite Element Method on
     #  tetrahedrons.
-    finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.45,
+    finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='small', poissonRatio=0.45,
                      youngModulus=600)
 
     # To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
@@ -113,11 +113,13 @@ def createScene(rootNode):
     # Create a CableConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
     # The last index is where the pullPoint is connected.
-    cable.addObject('CableConstraint', name="aCableActuator",
-                    indices=list(range(0, 14)),
-                    # indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
-                    minForce=0,  # Set that the cable can't push
-                    pullPoint=[0.0, 12.5, 2.5])
+
+
+    # cable.addObject('CableConstraint', name="aCableActuator",
+    #                 indices=list(range(0, 14)),
+    #                 # indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+    #                 minForce=0,  # Set that the cable can't push
+    #                 pullPoint=[0.0, 12.5, 2.5])
 
     # This creates a BarycentricMapping. A BarycentricMapping is a key element as it will create a bidirectional link
     #  between the cable's DoFs and the finger's one's so that movements of the cable's DoFs will be mapped
@@ -165,7 +167,7 @@ def createScene(rootNode):
 
     Plastic = finger.addChild('Plastic')
     Plastic.addObject('MechanicalObject', template='Vec6', name="Stress")
-    Plastic.addObject('BoxLagrangianConstraint', name="boxConstraint", indices=[0] , min=-40, max=30)
+    Plastic.addObject('BoxLagrangianConstraint', name="boxConstraint", indices=[0] , min=-20, max=30)
     Plastic.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
 
     return rootNode

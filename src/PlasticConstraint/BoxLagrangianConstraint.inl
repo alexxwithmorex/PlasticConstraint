@@ -30,9 +30,10 @@ void BoxLagrangianConstraint<DataTypes>::buildConstraintMatrix(const sofa::core:
 
     for (const auto idx : indices)
     {
+        const double h = this->getContext()->getDt();
         MatrixDerivRowIterator c_it = c->writeLine(cIndex++);
         //c_it.setCol(idx, Coord(1,0,1)); //pour tester avec vec3
-        c_it.setCol(idx, Coord(1,0,0,0,0,0));
+        c_it.setCol(idx, Coord(1/h,0,0,0,0,0));
     }
 }
 
@@ -46,6 +47,7 @@ void BoxLagrangianConstraint<DataTypes>::getConstraintViolation(const sofa::core
     for (size_t i = 0; i < indices.size(); ++i)
     {
         resV->set(constraintIndex + i, xValue[indices[i]][0]);
+        msg_info("BoxLagrangianConstraint") << " xValue : " << xValue[indices[i]][0];
     }
 }
 
