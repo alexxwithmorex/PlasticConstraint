@@ -34,6 +34,8 @@ public:
     void resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal*) override
     {
         const double dfree = d[line] - _w * force[line];
+        msg_info("BoxLagrangianConstraint") << " d : " << d[line];
+        msg_info("BoxLagrangianConstraint") << " dfree : " << dfree;
 
         if (dfree > _max)
             force[line] = (_max - dfree) * _invW;
