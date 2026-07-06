@@ -276,3 +276,21 @@
 /finger/Plastic/Stress.constraint = 2 0 1 0 1 0 0 0 0 0 1 1 5 1 0 0 0 0 0 
 /finger/Plastic/Stress.showColor = 1 1 1 1
 /finger/RestShapeSpringsForceField.springColor = 0 1 0 1
+
+--- NEW SESSION: 03/07/2026 16:14:08 ---
+/finger/Plastic/Stress.constraint = 2 0 1 0 1 0 0 0 0 0 1 1 5 1 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 06/07/2026 15:52:20 ---
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/boxConstraint.min = -21.76
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/boxConstraint.min = -21.76
+/finger/Plastic/Stress.showColor = 1 1 1 1
+/finger/Plastic/boxConstraint.min = -21.76
+/finger/Plastic/boxConstraint.min = -10
+/finger/Plastic/Stress.constraint = 2 0 1 0 1 0 0 0 0 0 1 1 5 1 0 0 0 0 0 
+/finger/Plastic/Stress.showColor = 1 1 1 1
+
+--- NEW SESSION: 06/07/2026 16:10:39 ---
+/finger/Plastic/boxConstraint.group = -1

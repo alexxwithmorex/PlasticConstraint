@@ -13,14 +13,15 @@ namespace plasticconstraint::constraint
 class BoxLagrangianConstraintResolution1Dof : public sofa::core::behavior::ConstraintResolution
 {
 protected:
-    double _invW, _w, _min, _max ;
+    double _invW, _w, _min, _max, _force ;
 
 public:
 
-    BoxLagrangianConstraintResolution1Dof(const double &min, const double &max)
+    BoxLagrangianConstraintResolution1Dof(const double &min, const double &max, const double &force)
         : sofa::core::behavior::ConstraintResolution(1)
         , _min(min)
         , _max(max)
+        , _force(force)
     { 
     }
 
@@ -33,18 +34,14 @@ public:
 
     void resolution(int line, SReal** /*w*/, SReal* d, SReal* force, SReal*) override
     {
-        const double dfree = d[line] - _w * force[line];
-        msg_info("BoxLagrangianConstraint") << " d : " << d[line];
-        msg_info("BoxLagrangianConstraint") << " dfree : " << dfree;
-        msg_info("BoxLagrangianConstraint") << " w : " << _w;
-
+        const double dfree = d[line] - _w * force[line] + _force * _w;
 
         if (dfree > _max)
-            force[line] = (_max - dfree) * _invW;
+            force[line] = (_max - dfree) * _invW + _force;
         else if (dfree < _min)
-            force[line] = (_min - dfree) * _invW;
+            force[line] = (_min - dfree) * _invW + _force;
         else
-            force[line] = 0;
+            force[line] = _force;
     }
 };
 
@@ -74,8 +71,10 @@ protected:
     sofa::Data<sofa::type::vector<unsigned int>> d_indices; ///< indices of the stop constraints
     sofa::Data<SReal> d_min; ///< minimum value accepted
     sofa::Data<SReal> d_max; ///< maximum value accepted
+    sofa::Data<sofa::type::vector<double>> d_force;
+    sofa::type::vector<double> _oldlambda;
 
-
+    
 
     BoxLagrangianConstraint(MechanicalState* object = nullptr);
 
@@ -99,6 +98,7 @@ public:
     void getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
 
     void getConstraintResolution(const sofa::core::ConstraintParams *, std::vector<sofa::core::behavior::ConstraintResolution*>& resTab, unsigned int& offset) override;
+    void storeLambda(const sofa::core::ConstraintParams* cParams, sofa::core::MultiVecDerivId res, const sofa::linearalgebra::BaseVector* lambda) override;
 };
 
 #if !defined(PLASTICCONSTRAINT_BOXLAGRANGIANCONSTRAINT_CPP)

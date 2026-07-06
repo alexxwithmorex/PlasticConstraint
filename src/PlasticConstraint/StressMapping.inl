@@ -131,23 +131,14 @@ void StressMapping<TIn, TOut>::apply(const core::MechanicalParams* /*mparams*/, 
         Real y = d_youngModulus.getValue()[0];
         Real p = d_poissonRatio.getValue()[0];
 
-        Real lambda = (y * p) / ((1 + p) * (1 - 2*p));
-        Real mu = y / (2 * (1 + p));
-
         /// stress
-        VoigtTensor s;
-
-        Real traceStrain = 0.0;
-        for (Index k = 0; k < 3; k++) {
-            traceStrain += vStrain[k];
-            s[k] = vStrain[k]*2*mu;
-        }
-
-        for (Index k = 3; k < 6; k++)
-            s[k] = vStrain[k]*2*mu;
+        Real traceStrain = vStrain[0] + vStrain[1] + vStrain[2];
+        VoigtTensor s; //epsilon
 
         for (Index k = 0; k < 3; k++)
-            s[k] += lambda*traceStrain;
+                s[k] = (vStrain[k] + (p/(1-2*p))*traceStrain) * (y/(1+p));
+        for (Index k = 3; k < 6; k++)
+            s[k] = vStrain[k] * (y/(1+p));
         
         out[i] = s;
     }
@@ -192,24 +183,16 @@ void StressMapping<TIn, TOut>::applyJ(const core::MechanicalParams* /*mparams*/,
         Real y = d_youngModulus.getValue()[0];
         Real p = d_poissonRatio.getValue()[0];
 
-        Real lambda = (y * p) / ((1 + p) * (1 - 2*p));
-        Real mu = y / (2 * (1 + p));
-
         /// stress
-        VoigtTensor s;
 
-        Real traceStrain = 0.0;
-        for (Index k = 0; k < 3; k++) {
-            traceStrain += vStrain[k];
-            s[k] = vStrain[k]*2*mu;
-        }
-
-        for (Index k = 3; k < 6; k++)
-            s[k] = vStrain[k]*2*mu;
+        Real traceStrain = vStrain[0] + vStrain[1] + vStrain[2];
+        VoigtTensor s; //epsilon
 
         for (Index k = 0; k < 3; k++)
-            s[k] += lambda*traceStrain;
-        
+                s[k] = (vStrain[k] + (p/(1-2*p))*traceStrain) * (y/(1+p));
+        for (Index k = 3; k < 6; k++)
+            s[k] = vStrain[k] * (y/(1+p));
+
         out[i] = s;
     }
     // Data<InVecDeriv> testOut;
