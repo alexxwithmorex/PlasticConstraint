@@ -39,7 +39,7 @@ def createScene(rootNode):
     rootNode.addObject('BlockGaussSeidelConstraintSolver', tolerance=1e-5, maxIterations=100)
 
     rootNode.gravity = [0, -9810, 0]
-    rootNode.dt = 1
+    rootNode.dt = 0.01
 
     ##########################################
     # FEM Model                              #

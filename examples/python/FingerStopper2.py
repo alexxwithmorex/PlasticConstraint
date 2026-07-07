@@ -60,7 +60,7 @@ def createScene(rootNode):
 
     # Add a TetrahedronFEMForceField component which implement an elastic material model solved using the Finite Element Method on
     #  tetrahedrons.
-    finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='large', poissonRatio=0.45,
+    finger.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='small', poissonRatio=0.45,
                      youngModulus=600)
 
     # To facilitate the selection of DoFs, SOFA has a concept called ROI (Region of Interest).
@@ -80,6 +80,17 @@ def createScene(rootNode):
     # finger.addObject('RestShapeSpringsForceField', points=[0, 1, 2, 11, 55], stiffness=1e12)
 
     finger.addObject('GenericConstraintCorrection')
+
+
+    ##########################################
+    # Plastic Constraint                     #
+    ##########################################
+
+
+    Plastic = finger.addChild('Plastic')
+    Plastic.addObject('MechanicalObject', template='Vec6', name="Stress")
+    Plastic.addObject('BoxLagrangianConstraint', name="boxConstraint", min=-20, max=10)
+    Plastic.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
 
     ##########################################
     # Cable                                  #
@@ -113,6 +124,8 @@ def createScene(rootNode):
     # Create a CableConstraint object with a name.
     # the indices are referring to the MechanicalObject's positions.
     # The last index is where the pullPoint is connected.
+
+
     cable.addObject('CableConstraint', name="aCableActuator",
                     indices=list(range(0, 14)),
                     # indices=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
@@ -129,6 +142,12 @@ def createScene(rootNode):
     #  file named "controller.py".
     cable.addObject(FingerController(name="FingerController", node=cable))
 
+    # stopper = finger.addChild('box')
+    # stopper.addObject('MechanicalObject',
+    #                 position=[[-95, 5, 7.5]])
+    # stopper.addObject('BoxLagrangianConstraint', name="bertrand", indices=[0], min=-85, max=-75)
+    # stopper.addObject('BarycentricMapping')
+
     ##########################################
     # Visualization                          #
     ##########################################
@@ -143,9 +162,70 @@ def createScene(rootNode):
     # Add a BarycentricMapping to deform the rendering model in a way that follow the ones of the parent mechanical model.
     fingerVisu.addObject('BarycentricMapping')
 
-    stressnode = finger.addChild('stress')
-    stressnode.addObject('MechanicalObject', template='Vec6', name="Stress")
-    stressnode.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
+    # stressnode = finger.addChild('stress')
+    # stressnode.addObject('MechanicalObject', template='Vec6', name="Stress")
+    # stressnode.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
+    
 
+    #--------------------------------------------------------
+    #le paragraphe suivant sert a tester la version avec vec3
+
+    # stopper = finger.addChild('box')
+    # stopper.addObject('MechanicalObject', position=[[-95, 5, 7.5]])
+    # stopper.addObject('BoxLagrangianConstraint', name="bertrand", indices=[0,1,4, 100], min=-60, max=5)
+    # stopper.addObject('BarycentricMapping')
+
+
+    ##########################################
+    # Second Scene                           #
+    ##########################################
+
+    finger2 = rootNode.addChild('finger2')
+    finger2.addObject('EulerImplicitSolver', name='odesolver', rayleighMass=0.1, rayleighStiffness=0.1)
+    finger2.addObject('SparseLDLSolver', template='CompressedRowSparseMatrixMat3x3d')
+    finger2.addObject('MeshVTKLoader', name='loader', filename=path + 'finger.vtk')
+    finger2.addObject('MeshTopology', src='@loader', name='container')
+    finger2.addObject('MechanicalObject', name='tetras', template='Vec3', showIndices=False, showIndicesScale=4e-5)
+    finger2.addObject('UniformMass', totalMass=0.075)
+    finger2.addObject('TetrahedronFEMForceField', template='Vec3', name='FEM', method='small', poissonRatio=0.45,
+                        youngModulus=600)
+    finger2.addObject('BoxROI', name='roi', box=[-15, 0, 0, 5, 10, 15], drawBoxes=True)
+    finger2.addObject('RestShapeSpringsForceField', points=finger.roi.indices.getLinkPath(), stiffness=1e12)
+    finger2.addObject('GenericConstraintCorrection')
+
+    cable2 = finger2.addChild('cable2')
+    cable2.addObject('MechanicalObject',
+                        position=[
+                            [-17.5, 12.5, 2.5],
+                            [-32.5, 12.5, 2.5],
+                            [-47.5, 12.5, 2.5],
+                            [-62.5, 12.5, 2.5],
+                            [-77.5, 12.5, 2.5],
+
+                            [-85.5, 12.5, 6.5],
+                            [-85.5, 12.5, 8.5],
+                            [-83.5, 12.5, 4.5],
+                            [-83.5, 12.5, 10.5],
+
+                            [-77.5, 12.5, 12.5],
+                            [-62.5, 12.5, 12.5],
+                            [-47.5, 12.5, 12.5],
+                            [-32.5, 12.5, 12.5],
+                            [-17.5, 12.5, 12.5]])
+    cable2.addObject('CableConstraint', name="aCableActuator",
+                        indices=list(range(0, 14)),
+                        minForce=0,  # Set that the cable can't push
+                        pullPoint=[0.0, 12.5, 2.5])
+    cable2.addObject('BarycentricMapping')
+
+
+    fingerVisu2 = finger2.addChild('visu2')
+    fingerVisu2.addObject('MeshSTLLoader', filename=path + "finger.stl", name="loader")
+    fingerVisu2.addObject('OglModel', src="@loader", color=[0.0, 0.7, 0.7, 1])
+    fingerVisu2.addObject('BarycentricMapping')
 
     return rootNode
+
+
+
+    

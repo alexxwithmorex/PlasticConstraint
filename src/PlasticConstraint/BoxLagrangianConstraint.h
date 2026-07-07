@@ -15,6 +15,7 @@ class BoxLagrangianConstraintResolution1Dof : public sofa::core::behavior::Const
 protected:
     double _invW, _w, _min, _max, _force ;
 
+
 public:
 
     BoxLagrangianConstraintResolution1Dof(const double &min, const double &max, const double &force)
@@ -94,6 +95,8 @@ protected:
 
 
 public:
+    // void init() override;
+
     void buildConstraintMatrix(const sofa::core::ConstraintParams* cParams, DataMatrixDeriv &c_d, unsigned int &cIndex, const DataVecCoord &x) override;
     void getConstraintViolation(const sofa::core::ConstraintParams* cParams, sofa::linearalgebra::BaseVector *resV, const DataVecCoord &x, const DataVecDeriv &v) override;
 
