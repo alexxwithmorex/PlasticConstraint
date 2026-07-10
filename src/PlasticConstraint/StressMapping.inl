@@ -36,11 +36,9 @@ void StressMapping<TIn, TOut>::init()
 
     this->toModel->resize(nTetras);
 
-    //using InVecCoord = typename TIn::VecCoord;
     const InVecCoord& p = this->fromModel->read(core::vec_id::read_access::restPosition)->getValue();
     d_initialPoints.setValue(p);
 
-    //copie & adapte de la fonction reinit dans TetrahedronFEMForceField
     helper::ReadAccessor<Data<InVecCoord>> X0 = d_initialPoints;
     elemShapeFun.resize(nTetras);
 
@@ -57,8 +55,6 @@ void StressMapping<TIn, TOut>::init()
         assert(canInvert);
         SOFA_UNUSED(canInvert);
     }
-    // elemLambda.resize(nTetras);
-    // elemMu.resize(nTetras);
 
     // Build J: (nTetras * NOut) x (nNodes * NIn)
     // Each output row i has 4 entries of 0.25 at columns t[0..3]
@@ -89,14 +85,13 @@ template <class TIn, class TOut>
 void StressMapping<TIn, TOut>::apply(const core::MechanicalParams* /*mparams*/, Data<VecCoord>& dOut, const Data<InVecCoord>& dIn)
 {
     helper::WriteOnlyAccessor<Data<VecDeriv>> out = dOut;
-    //helper::ReadAccessor<Data<InVecDeriv>> in  = dIn;
 
     const InVecCoord& X = this->fromModel->read(core::vec_id::read_access::position)->getValue();
     helper::ReadAccessor<Data<InVecCoord> > X0 =  d_initialPoints;
 
     if (!m_topology) return;
 
-    const auto& tetras = m_topology->getTetrahedra(); //tetras correspond au indexed elements du code FEMforcefield
+    const auto& tetras = m_topology->getTetrahedra();
     out.resize(tetras.size());
 
     InVecCoord U;
@@ -133,7 +128,7 @@ void StressMapping<TIn, TOut>::apply(const core::MechanicalParams* /*mparams*/, 
 
         /// stress
         Real traceStrain = vStrain[0] + vStrain[1] + vStrain[2];
-        VoigtTensor s; //epsilon
+        VoigtTensor s;
 
         for (Index k = 0; k < 3; k++)
                 s[k] = (vStrain[k] + (p/(1-2*p))*traceStrain) * (y/(1+p));
@@ -153,7 +148,7 @@ void StressMapping<TIn, TOut>::applyJ(const core::MechanicalParams* /*mparams*/,
 
     if (!m_topology) return;
 
-    const auto& tetras = m_topology->getTetrahedra(); //tetras correspond au indexed elements du code FEMforcefield
+    const auto& tetras = m_topology->getTetrahedra();
     out.resize(tetras.size());
 
     for (size_t i = 0; i < tetras.size(); ++i)
@@ -184,9 +179,8 @@ void StressMapping<TIn, TOut>::applyJ(const core::MechanicalParams* /*mparams*/,
         Real p = d_poissonRatio.getValue()[0];
 
         /// stress
-
         Real traceStrain = vStrain[0] + vStrain[1] + vStrain[2];
-        VoigtTensor s; //epsilon
+        VoigtTensor s; 
 
         for (Index k = 0; k < 3; k++)
                 s[k] = (vStrain[k] + (p/(1-2*p))*traceStrain) * (y/(1+p));
@@ -195,15 +189,6 @@ void StressMapping<TIn, TOut>::applyJ(const core::MechanicalParams* /*mparams*/,
 
         out[i] = s;
     }
-    // Data<InVecDeriv> testOut;
-    // InVecDeriv tmp(this->fromModel->getSize());
-    // testOut.setValue(tmp);
-
-    // applyJT(nullptr, testOut, dOut);  // dOut = le stress qu'on vient de calculer
-
-    // const InVecDeriv& res = testOut.getValue();
-    // for (size_t n = 0; n < res.size(); ++n)
-    //     msg_info() << "node " << n << " displacement from applyJT: " << res[n];
 }
 
 template<class TIn, class TOut>
@@ -234,7 +219,7 @@ void StressMapping<TIn, TOut>::applyJT(const core::MechanicalParams* /*mparams*/
     
         Mat33 gradU;
         for (Index k = 0; k < 3; k++)
-            gradU(k, k) = s[k]; //remplit la diagonale
+            gradU(k, k) = s[k];
         gradU(1,2) = gradU(2,1) = s[3];
         gradU(0,2) = gradU(2,0) = s[4];
         gradU(0,1) = gradU(1,0) = s[5];
@@ -245,15 +230,6 @@ void StressMapping<TIn, TOut>::applyJT(const core::MechanicalParams* /*mparams*/
                     out[it[m]][k] += shf(l+1, m) * gradU(k, l);
         
     }
- //recuperer sigma (the stress)
- //appliquer la formule de la loi de hooke pour trouver epsilon :
- // tr = s[0] + s[1] + s[2] car sigma est un vecteur colonne de 6 elem qui correspondent a une mat symetrique
- // vec a = (1 + poisson)*s
- // b = poisson * tr
- // vec b = (b b b 0 0 0) (mais sous forme colonne)
- // eps = (1/young) * (vec a - vec b)
- //retrouver U depuis epsilon en utilisant la transposee de shf 
- // U = eps * shfT
 }
 
 template <class TIn, class TOut>
@@ -273,10 +249,7 @@ void StressMapping<TIn, TOut>::applyJT(const core::ConstraintParams* /*cparams*/
         auto o = out.writeLine(rowIt.index());
         for (typename Out::MatrixDeriv::ColConstIterator colIt = rowIt.begin(); colIt != rowIt.end(); ++colIt)
         {
-            // colIt.index() = index du tétraèdre
-            // colIt.val() = VoigtTensor (6 composantes de stress)
             const Index tetraIdx = colIt.index();
-            //const VoigtTensor& s = colIt.val();
             const VoigtTensor& eps = colIt.val();
             const auto& it  = tetras[tetraIdx];
             const Mat44& shf = elemShapeFun[tetraIdx];
@@ -291,7 +264,7 @@ void StressMapping<TIn, TOut>::applyJT(const core::ConstraintParams* /*cparams*/
 
             Mat33 gradU;
             for (Index k = 0; k < 3; k++)
-                gradU(k, k) = s[k]; //remplit la diagonale
+                gradU(k, k) = s[k];
             gradU(1,2) = gradU(2,1) = s[3];
             gradU(0,2) = gradU(2,0) = s[4];
             gradU(0,1) = gradU(1,0) = s[5];

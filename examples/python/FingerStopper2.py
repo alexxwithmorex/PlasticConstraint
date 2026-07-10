@@ -142,12 +142,6 @@ def createScene(rootNode):
     #  file named "controller.py".
     cable.addObject(FingerController(name="FingerController", node=cable))
 
-    # stopper = finger.addChild('box')
-    # stopper.addObject('MechanicalObject',
-    #                 position=[[-95, 5, 7.5]])
-    # stopper.addObject('BoxLagrangianConstraint', name="bertrand", indices=[0], min=-85, max=-75)
-    # stopper.addObject('BarycentricMapping')
-
     ##########################################
     # Visualization                          #
     ##########################################
@@ -162,18 +156,6 @@ def createScene(rootNode):
     # Add a BarycentricMapping to deform the rendering model in a way that follow the ones of the parent mechanical model.
     fingerVisu.addObject('BarycentricMapping')
 
-    # stressnode = finger.addChild('stress')
-    # stressnode.addObject('MechanicalObject', template='Vec6', name="Stress")
-    # stressnode.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
-    
-
-    #--------------------------------------------------------
-    #le paragraphe suivant sert a tester la version avec vec3
-
-    # stopper = finger.addChild('box')
-    # stopper.addObject('MechanicalObject', position=[[-95, 5, 7.5]])
-    # stopper.addObject('BoxLagrangianConstraint', name="bertrand", indices=[0,1,4, 100], min=-60, max=5)
-    # stopper.addObject('BarycentricMapping')
 
 
     ##########################################
@@ -192,6 +174,10 @@ def createScene(rootNode):
     finger2.addObject('BoxROI', name='roi', box=[-15, 0, 0, 5, 10, 15], drawBoxes=True)
     finger2.addObject('RestShapeSpringsForceField', points=finger.roi.indices.getLinkPath(), stiffness=1e12)
     finger2.addObject('GenericConstraintCorrection')
+
+    Plastic2 = finger2.addChild('Plastic2')
+    Plastic2.addObject('MechanicalObject', template='Vec6', name="Stress")
+    Plastic2.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
 
     cable2 = finger2.addChild('cable2')
     cable2.addObject('MechanicalObject',

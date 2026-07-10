@@ -20,26 +20,6 @@ BoxLagrangianConstraint<DataTypes>::BoxLagrangianConstraint(MechanicalState* obj
     , d_max(initData(&d_max, 100.0_sreal, "max", "maximum value accepted"))
     , d_force(initData(&d_force, "force", "plastic strain"))
 {
-    if (d_indices.getValue().empty())
-    {
-        sofa::type::vector<unsigned int> all;
-        for (unsigned int i = 0; i < 389; ++i)
-            all.push_back(i);
-        d_indices.setValue(all);
-    }
-
-
-    const auto& indices = d_indices.getValue();
-
-    msg_info("BoxLagrangianConstraint") << " am here ";
-    msg_info("BoxLagrangianConstraint") << " indices " << indices.size();
-
-    for (size_t i = 0; i < indices.size(); ++i){
-        _oldlambda.push_back(0.0);
-    }
-    d_force.setValue(_oldlambda);
-    msg_info("BoxLagrangianConstraint") << "old lambda " << _oldlambda;
-
 }
 
 template<class DataTypes>
@@ -50,11 +30,19 @@ void BoxLagrangianConstraint<DataTypes>::buildConstraintMatrix(const sofa::core:
     if (d_indices.getValue().empty())
     {
         sofa::type::vector<unsigned int> all;
-        for (unsigned int i = 0; i < 389; ++i)
+
+        for (unsigned int i = 0; i < this->getMState()->getSize(); ++i)
             all.push_back(i);
         d_indices.setValue(all);
+
     }
+
     const auto& indices = d_indices.getValue();
+
+    for (size_t i = 0; i < indices.size(); ++i){
+        _oldlambda.push_back(0.0);
+    }
+    d_force.setValue(_oldlambda);
 
     for (const auto idx : indices)
     {
@@ -101,7 +89,6 @@ void BoxLagrangianConstraint<DataTypes>::storeLambda(const sofa::core::Constrain
     for (size_t i = 0; i < indices.size(); ++i){
 
         deltalambda[i] = lambda->element(this->d_constraintIndex.getValue() + i) - _oldlambda[i];
-        // msg_info("BoxLagrangianConstraint") << "constraint index" << this->d_constraintIndex.getValue();
         tmp.push_back(d_force.getValue()[i] + deltalambda[i]);
         _oldlambda[i] = lambda->element(this->d_constraintIndex.getValue() + i);
     }

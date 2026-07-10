@@ -12,7 +12,6 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/topology/BaseMeshTopology.h>
 #include <sofa/core/objectmodel/Link.h>
-//#include <sofa/component/solidmechanics/fem/elastic/TetrahedronFEMForceField.h>
 
 namespace sofa::component::mapping::linear
 {
@@ -24,7 +23,6 @@ class StressMapping : public LinearMapping<TIn, TOut>
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(StressMapping,TIn,TOut), SOFA_TEMPLATE2(LinearMapping,TIn,TOut));
-    //sofa::component::forcefield::TetrahedronFEMForceField<TIn>* m_femFF = nullptr;
 
     typedef LinearMapping<TIn, TOut> Inherit;
     typedef TIn In;
@@ -85,10 +83,7 @@ protected:
     }
 
 public:
-    /// Return true if the destination model has the same topology as the source model.
-    ///
-    /// This is the case for mapping keeping a one-to-one correspondence between
-    /// input and output DOFs (mostly identity or data-conversion mappings).
+
     bool sameTopology() const override { return true; }
 
     void init() override;

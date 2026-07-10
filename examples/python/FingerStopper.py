@@ -93,11 +93,6 @@ def createScene(rootNode):
     Plastic.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
 
 
-
-
-
-
-
     ##########################################
     # Cable                                  #
     ##########################################
@@ -148,12 +143,6 @@ def createScene(rootNode):
     #  file named "controller.py".
     cable.addObject(FingerController(name="FingerController", node=cable))
 
-    # stopper = finger.addChild('box')
-    # stopper.addObject('MechanicalObject',
-    #                 position=[[-95, 5, 7.5]])
-    # stopper.addObject('BoxLagrangianConstraint', name="bertrand", indices=[0], min=-85, max=-75)
-    # stopper.addObject('BarycentricMapping')
-
     ##########################################
     # Visualization                          #
     ##########################################
@@ -167,11 +156,6 @@ def createScene(rootNode):
 
     # Add a BarycentricMapping to deform the rendering model in a way that follow the ones of the parent mechanical model.
     fingerVisu.addObject('BarycentricMapping')
-
-    # stressnode = finger.addChild('stress')
-    # stressnode.addObject('MechanicalObject', template='Vec6', name="Stress")
-    # stressnode.addObject('StressMapping', template='Vec3,Vec6', input='@../tetras', output='@Stress', inputTopology='@../container', youngModulus=600, poissonRatio=0.45)
-    
 
     #--------------------------------------------------------
     #le paragraphe suivant sert a tester la version avec vec3
